@@ -17,3 +17,4 @@ package-lock.json
 yarn.lock
 
 # Ignore any other sensitive or generated files
+large_products.jsonl
