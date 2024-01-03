@@ -1,30 +1,47 @@
 const fs = require('fs');
 const JSONStream = require('JSONStream');
+const migrateProducts = require('./migrateProducts');
 
 const processJSONLFile = () => {
-    const dataArray = [];
-    const max1 = 1000;
-    const max2 = 900;
-    const readStream = fs.createReadStream('../../large_products.jsonl', { encoding: 'utf8', highWaterMark: 320 * 1024 });
+    return new Promise((resolve, reject) => {
+        let countLine = 1;
+        let dataArray = [];
+        // const streamSize = 20000;
+        const bufferSize = 900;
+        const readStream = fs.createReadStream('./large_products.jsonl', { encoding: 'utf8', highWaterMark: 3 * 1024 });
 
-    readStream
-    .pipe(JSONStream.parse())
-    .on('data', (data) => {
-        if(dataArray.length<max1){
-            if (dataArray.length<max2) {
+        readStream
+            .on('error', (err) => {
+                reject(new Error('Error reading file:' + err));
+            })
+            .pipe(JSONStream.parse())
+            .on('data', async (data) => {
                 dataArray.push(data);
-            }
-            else {
-                readStream.pause();
-                console.log('Final : '+ dataArray.length)
-            }
-        }
-    })
-    .on('end', () => {console.log('File read complete');})
-    .on('error', (err) => {console.error('Error reading file:', err);});
+                if (dataArray.length === bufferSize) {
+                        const send = [...dataArray];
+                        dataArray.length = 0;
+                        await migrateProducts(send);
+                    }
+                if(typeof streamSize !== 'undefined' && streamSize !== null && countLine===streamSize){
+                    readStream.pause();
+                    readStream.close();
+                    if (dataArray.length > 0) {
+                        const send = [...dataArray];
+                        dataArray.length = 0;
+                        await migrateProducts(send);
+                    }
+                    resolve('data imported');
+                } 
+                countLine++;
+            })
+            .on('end', async () => {
+                if (dataArray.length > 0) {
+                    await migrateProducts(dataArray);
+                }
+                console.log('File read complete');
+                resolve('data imported');
+            });
+    });
 };
-
-processJSONLFile()
-
 
 module.exports = processJSONLFile;

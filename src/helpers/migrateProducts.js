@@ -1,48 +1,25 @@
-const { Product, Variant } = require('./models');
+const { Product, Variant } = require('../../sequelize.config');
 
 const migrateProducts = async (dataArray) => {
   try {
     const products = [];
     const variants = [];
 
-    dataArray.forEach((item) => {
+    dataArray.forEach((product) => {
       const productData = {
-        id: item.id,
-        title: item.title,
-        description: item.description,
-        vendor: item.vendor,
+        id: product.id,
+        title: product.title,
+        description: product.description,
+        vendor: product.vendor,
       };
       products.push(productData);
-
-      item.variants.forEach((variantItem) => {
-        const variantData = {
-          id: variantItem.id,
-          variantTitle: variantItem.variantTitle,
-          price: variantItem.price,
-          availableQuantity: variantItem.availableQuantity,
-          availableForSale: variantItem.availableForSale,
-          variantPosition: variantItem.variantPosition,
-        };
-
-        
-      });
+      variants.push(...product.variants)
     });
 
-
     await Product.bulkCreate(products, { ignoreDuplicates: true });
-
-
-    for (const [productId, variants] of variantsByProduct) {
-      await Variant.bulkCreate(variants, { ignoreDuplicates: true });
-
-      const product = await Product.findByPk(productId);
-      if (product) {
-        await product.setVariants(variants);
-      }
-    }
-
-    console.log('Data inserted successfully into the database');
-  } catch (error) {
+    await Variant.bulkCreate(variants, {ignoreDuplicates: true})
+  }
+  catch (error) {
     console.error('Error inserting data:', error);
   }
 };

@@ -26,6 +26,10 @@ fs.readdirSync(path.join(__dirname, '/src/models'))
   let capsEntries = entries.map((entry) => [entry[0][0].toUpperCase() + entry[0].slice(1), entry[1]]);
   sequelize.models = Object.fromEntries(capsEntries);
 
+  const {Product , Variant} =sequelize.models;
+
+  Product.hasMany(Variant, { as: 'variants' })
+  Variant.belongsTo(Product, { foreignKey: { allowNull: false } })
 
 module.exports = {
     ...sequelize.models,

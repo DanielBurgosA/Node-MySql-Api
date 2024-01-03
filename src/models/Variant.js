@@ -26,5 +26,14 @@ module.exports = (sequelize) => {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-    },{ timestamps: false })
+        productId: {
+            type: DataTypes.BIGINT,
+        }
+    },{ timestamps: false,
+        indexes: [
+            {
+                unique: false,
+                fields: ['productId'],
+            }
+        ] })
 };
