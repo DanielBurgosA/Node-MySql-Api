@@ -1,5 +1,5 @@
 const processJSONLFile = require('../helpers/readFileLineByLine')
-const {getAllProductsWithVariant} = require('../helpers/productHandler')
+const {getAllProductsWithVariant} = require('../handlers/productHandler')
 
 const importAll = async ( req, res) =>{
     try {
