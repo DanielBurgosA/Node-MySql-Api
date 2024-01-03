@@ -1,7 +1,7 @@
 const { Router } = require('express');
 
-const rApi = require('./api')
-const rProducts = require('./products')
+const rApi = require('./apiRouter')
+const rProducts = require('./productsRouter')
 
 const router = Router();
 
