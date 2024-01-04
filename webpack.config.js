@@ -7,6 +7,13 @@ module.exports = {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
   },
+  resolve: {
+    fallback: {
+      fs: false, // or any other modules you might need
+      // Add other core modules here with appropriate fallback values
+      zlib: require.resolve('browserify-zlib'), // Fallback for zlib
+    },
+  },
   module: {
     rules: [
       {
