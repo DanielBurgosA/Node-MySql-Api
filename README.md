@@ -41,7 +41,7 @@ To start the project, follow these steps:
 #### Get Product by ID
 
 - **Endpoint:** `GET /products/products/:id`
-- **Description:** Retrieve a specific product by its ID.
+- **Description:** Retrieve a specific product by its ID with variants.
 
 #### Update Product
 
@@ -51,7 +51,7 @@ To start the project, follow these steps:
 #### Update Variant
 
 - **Endpoint:** `PUT /products/variant`
-- **Description:** Update an existing variant.
+- **Description:** Update an existing variant, it uses de productId as indexes in the models to optimize the search.
 
 #### Delete Product
 
@@ -65,4 +65,17 @@ To start the project, follow these steps:
 
 ---
 
+### JWT Token
+
+#### Generate Token
+
+- **Endpoint:** `POST /api/token`
+- **Description:** Generates a JWT token for testing purposes. Configure the environment variables for the user ID and username before using this endpoint.
+
+#### Protected Route
+
+- **Endpoint:** `GET /api/protected_route`
+- **Description:** A protected route that requires a valid JWT token. Include the generated token in the 'authorization' header without the 'Bearer' prefix to access this route.
+
+---
 Ensure that the 'large_products.jsonl' file is available in the project folder before utilizing the import functionality. The routes support various operations for managing products and their variants.
