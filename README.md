@@ -11,6 +11,10 @@ To start the project, follow these steps:
 1. Run `npm install` to install dependencies.
 2. Execute `npm start` to lift the server on port 3001 using Nodemon.
 
+To run webpack in dev:
+1. Run `npm install` to install dependencies.
+2. Execute `npm run dev` to lift the server on port 3001 using Webpack.
+
 
 
 #### Import Products
