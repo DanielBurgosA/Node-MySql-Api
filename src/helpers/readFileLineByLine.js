@@ -7,8 +7,8 @@ const processJSONLFile = () => {
         let countLine = 1;
         let dataArray = [];
         // const streamSize = 20000;
-        const bufferSize = 900;
-        const readStream = fs.createReadStream('./file/large_products.jsonl', { encoding: 'utf8', highWaterMark: 3 * 1024 });
+        const bufferSize = 800;
+        const readStream = fs.createReadStream('./file/large_products.jsonl', { encoding: 'utf8', highWaterMark: 2 * 1024 });
 
         readStream
             .on('error', (err) => {
