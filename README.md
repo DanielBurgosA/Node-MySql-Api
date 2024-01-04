@@ -7,7 +7,7 @@ Welcome to the API documentation for our product management system. Below are th
 #### Import Products
 
 - **Endpoint:** `POST /products/import`
-- **Description:** Import products from a JSONL file. For the import process, ensure the 'large_products.jsonl' file is present in the project folder.
+- **Description:** Import products from a JSONL file. For the import process, ensure the 'large_products.jsonl' file is present in the 'file' folder within the project.
 
 #### Create Product
 
