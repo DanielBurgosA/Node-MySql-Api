@@ -47,7 +47,7 @@ Welcome to the API documentation for our product management system. Below are th
 #### Delete Product
 
 - **Endpoint:** `DELETE /products/product`
-- **Description:** Delete a product.
+- **Description:** Delete a product and all of its variants.
 
 #### Delete Variant
 
