@@ -4,6 +4,15 @@ Welcome to the API documentation for our product management system. Below are th
 
 ---
 
+### Getting Started
+
+To start the project, follow these steps:
+
+1. Run `npm install` to install dependencies.
+2. Execute `npm start` to lift the server on port 3001 using Nodemon.
+
+
+
 #### Import Products
 
 - **Endpoint:** `POST /products/import`
