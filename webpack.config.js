@@ -1,4 +1,12 @@
 const path = require('path');
+const BrowserifyZlib = require.resolve('browserify-zlib');
+const ReadableStream = require.resolve('readable-stream');
+const CryptoBrowserify = require.resolve('crypto-browserify');
+const PgHstore = require.resolve('pg-hstore');
+const Assert = require.resolve('assert/');
+const OsBrowserify = require.resolve('os-browserify/browser');
+const StreamHttp = require.resolve('stream-http');
+const QuerystringEs3 = require.resolve('querystring-es3');
 
 module.exports = {
   mode: 'development',
@@ -9,9 +17,19 @@ module.exports = {
   },
   resolve: {
     fallback: {
-      fs: false, // or any other modules you might need
-      // Add other core modules here with appropriate fallback values
-      zlib: require.resolve('browserify-zlib'), // Fallback for zlib
+      fs: false,
+      zlib: BrowserifyZlib,
+      stream: ReadableStream,
+      buffer: require.resolve('buffer/'),
+      url: require.resolve('url/'),
+      crypto: CryptoBrowserify,
+      'pg-hstore': PgHstore,
+      assert: Assert,
+      os: OsBrowserify,
+      http: StreamHttp,
+      net: false, // Adjust based on the requirements
+      querystring: QuerystringEs3,
+      // Add other fallbacks as needed
     },
   },
   module: {
