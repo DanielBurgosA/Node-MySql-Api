@@ -2,28 +2,66 @@ const { Product, Variant } = require('../../sequelize.config');
 
 //create
 const createProduct = async (product) =>{
-  const newProduct = await Product.create({
-    id: product.id,
-    title: product.title,
-    description: product.description,
-    vendor: product.vendor,
-  })
-  await Variant.bulkCreate(product.variants, {ignoreDuplicates: true})
+  const { title, description, vendor, variants } = product;
+
+  if (!title || !description || !vendor || !Array.isArray(variants)) 
+    throw new Error('Missing or invalid product data');
+
+  let newProduct
+  const transaction = await sequelize.transaction();
+  try {
+    newProduct = await Product.create({
+      title,
+      description,
+      vendor,
+    }, { transaction });
+
+    const variantsP = variants.map((variant) => ({
+      variantTitle: variant.variantTitle,
+      price: variant.price,
+      availableQuantity: variant.availableQuantity,
+      availableForSale: variant.availableForSale,
+      variantPosition: variant.variantPosition,
+      productId: newProduct.id,
+    }));
+
+    await Variant.bulkCreate(variantsP, {
+      ignoreDuplicates: true,
+      transaction,
+    });
+
+    await transaction.commit();
+  } catch (error) {
+    await transaction.rollback();
+    throw error;
+  }
   
   return newProduct;
 }
 
 const createVariant = async (variantData) => {
+  const {
+    variantTitle,
+    price,
+    availableQuantity,
+    availableForSale,
+    variantPosition,
+    productId
+  } = variantData;
+
+  if (!variantTitle || !price || !availableQuantity || !availableForSale || !variantPosition || !productId ) 
+    throw new Error('Missing or invalid variant data');
+
   const newVariant = await Variant.create({
-    variantTitle: variantData.variantTitle,
-    price: variantData.price,
-    availableQuantity: variantData.availableQuantity,
-    availableForSale: variantData.availableForSale,
-    variantPosition: variantData.variantPosition,
-    productId: variantData.productId,
+    variantTitle,
+    price,
+    availableQuantity,
+    availableForSale,
+    variantPosition,
+    productId,
   });
 
-  return newVariant;
+   return newVariant;
 };
 
 //get
@@ -39,65 +77,44 @@ const getAllProductsWithVariant = async () => {
   };
 
 const getAllProduct = async () => {
-    try {
-      const products = await Product.findAll()
-      return products;
-    } catch (error) {
-      throw error;
-    }
-  };
+  const products = await Product.findAll()
+  return products;
+};
 
 const getProductById = async (id) => {
-    try {
-      const product = await Product.findByPk(id, { include: Variant });
-      return product;
-    } catch (error) {
-      throw error;
-    }
-  };
+  const product = await Product.findByPk(id, { include: Variant });
+  return product;
+};
 
 //update
 const updateProduct = async (id, updates) =>{
-  try {
-    const product = await Product.findByPk(id);
-    if (!product) throw new Error (`Product with id ${id} does not exist` )
-    await product.update(updates);
-    return product
-  } catch (error) {
-    throw error;
-  }
+  const product = await Product.findByPk(id);
+  if (!product) return
+  await product.update(updates);
+  return product
 }
 
 const updateVariant = async (id, productId, updates) =>{
-  try {
-    const variant = await Variant.findOne({
-      where: {
-        id: id,
-        productId: productId,
-      },
-    });
-    if (!variant) throw new Error (`Variant with id ${id} does not exist` )
-    await variant.update(updatedData);
-    return variant
-  } catch (error) {
-    throw error;
-  }
+  const variant = await Variant.findOne({
+    where: {
+      id: id,
+      productId: productId,
+    },
+  });
+  if (!variant) return
+  await variant.update(updates);
+  return variant
 }
 
 //delete
 const deleteVariantById = async (id, productId) => {
-  try {
-    const variant = await Variant.destroy({
-      where: {
-        id: id,
-        productId: productId,
-      },
-    });
-
-    return variant;
-  } catch (error) {
-    throw error;
-  }
+  const variant = await Variant.destroy({
+    where: {
+      id: id,
+      productId: productId,
+    },
+  });
+  return variant;
 };
 
 const deleteProductById = async (id) => {
